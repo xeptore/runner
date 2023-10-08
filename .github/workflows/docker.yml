@@ -1,0 +1,79 @@
+name: 🐋
+on:
+  schedule:
+    - cron: "17 7 * * *"
+  push:
+    branches:
+      - main
+concurrency:
+  group: ${{ github.workflow }}/${{ github.ref_type }}/${{ github.ref_name }}
+  cancel-in-progress: true
+permissions:
+  contents: none
+  deployments: none
+  actions: none
+  checks: none
+  discussions: none
+  id-token: none
+  issues: none
+  packages: none
+  pages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get Version
+        id: runner
+        run: |
+          echo "version=$(cat ./version)" >> $GITHUB_OUTPUT
+      - name: Docker Meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=schedule,pattern=nightly
+            type=raw,enable=true,value=${{ steps.runner.outputs.version }}
+            type=raw,enable={{is_default_branch}},value=latest
+          labels: |
+            maintainer=${{ github.repository_owner }}
+            org.opencontainers.image.authors=${{ github.repository_owner }}
+          flavor: |
+            latest=false
+            prefix=,onlatest=false
+            suffix=,onlatest=false
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker Image Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          pull: true
+          context: .
+          file: Dockerfile
+          build-args: |
+            RUNNER_VERSION=${{ steps.runner.outputs.version }}
+          no-cache: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+        timeout-minutes: 10
