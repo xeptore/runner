@@ -9,4 +9,4 @@
 
 (su nonroot -c start.sh) &
 
-wait
+wait $!
