@@ -14,7 +14,7 @@ dockerd_pid=$!
 
 su nonroot -c start.sh
 
-kill -SIGINT $dockerd_pid
+kill -SIGINT "$(cat /var/run/docker.pid)"
 
 wait -n $dockerd_pid
 
