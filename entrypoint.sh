@@ -12,9 +12,15 @@ set -u
 
 dockerd_entrypoint_pid=$!
 
-su nonroot -c start.sh
+su nonroot -c start.sh &
 
-kill -SIGINT "$(cat /var/run/docker.pid)"
+start_pid=$!
+
+trap 'kill -SIGINT $start_pid; kill -SIGINT "$(cat /var/run/docker.pid)"' INT
+
+wait -fn $start_pid
+
+[[ -f /var/run/docker.pid ]] && kill -SIGINT "$(cat /var/run/docker.pid)"
 
 wait -fn $dockerd_entrypoint_pid
 
