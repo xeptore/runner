@@ -1,6 +1,10 @@
 # GitHub Self-Hosted Runner Docker
 
-Docker image that can be used for self-hosting GitHub Actions Runner.
+Docker image that can be used for self-hosting [GitHub Actions Runner](https://github.com/actions/runner).
+
+## Development
+
+Set desired upstream version/tag in [`version`](./version) file. See the list of releases [here](https://github.com/actions/runner).
 
 ## Features
 
