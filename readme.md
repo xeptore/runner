@@ -76,7 +76,7 @@ Which upon successful runners registration, results in something similar to this
 
 ## Known Issues
 
-- [ ] As I'm not much experienced in Bash scripting, there are some improvements that must be made to the scripts used by the image, specially [`start.sh`](./start.sh), and [`entrypoint.sh`](./entrypoint.sh), for example to handle graceful Docker Daemon shutdown, and make sure that processes launched by these scripts are killed/stopped. Or, at least the correctness of the existing scripts must be verified.
+- [x] As I'm not much experienced in Bash scripting, there are some improvements that must be made to the scripts used by the image, specially [`start.sh`](./start.sh), and [`entrypoint.sh`](./entrypoint.sh), for example to handle graceful Docker Daemon shutdown, and make sure that processes launched by these scripts are killed/stopped. Or, at least the correctness of the existing scripts must be verified.
 - [ ] As I only tried running this image with privileged access, it's not currently possible to use Docker Swarm for multi-host deployments. See [this thread on Docker forum](https://forums.docker.com/t/ignoring-unsupported-options-privileged/57627), and [this issue on GitHub](https://github.com/moby/moby/issues/24862) for more.
 
 ## Credits
