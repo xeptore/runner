@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ux
+
 (
   sleep 5
   until dockerd-entrypoint.sh; do
