@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ux
+set -u
 
 (
   sleep 5
