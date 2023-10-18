@@ -12,7 +12,7 @@ set -ux
 
 dockerd_pid=$!
 
-(su nonroot -c start.sh)
+su nonroot -c start.sh
 
 kill -SIGINT $dockerd_pid
 
