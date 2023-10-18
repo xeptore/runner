@@ -10,12 +10,12 @@ set -ux
   done
 ) &
 
-dockerd_pid=$!
+dockerd_entrypoint_pid=$!
 
 su nonroot -c start.sh
 
 kill -SIGINT "$(cat /var/run/docker.pid)"
 
-wait -n $dockerd_pid
+wait -fn $dockerd_entrypoint_pid
 
 sleep 3
