@@ -1,12 +1,19 @@
 #!/bin/bash
 
 (
+  sleep 5
   until dockerd-entrypoint.sh; do
-    echo Failed to start Docker Daemon. Retrying in 5 seconds...
+    echo 'Failed to start Docker Daemon. Retrying in 5 seconds...'
     sleep 5
   done
 ) &
 
-(su nonroot -c start.sh) &
+dockerd_pid=$!
 
-wait $!
+(su nonroot -c start.sh)
+
+kill -SIGINT $dockerd_pid
+
+wait -n $dockerd_pid
+
+sleep 3
