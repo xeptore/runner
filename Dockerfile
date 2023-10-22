@@ -3,6 +3,7 @@ FROM docker.io/library/ubuntu:23.04
 ARG RUNNER_VERSION
 RUN <<eot
   set -eux
+  sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
   apt-get update
   apt-get upgrade -y
   apt-get install -y --no-install-recommends --no-install-suggests \
