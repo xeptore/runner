@@ -3,7 +3,6 @@ FROM docker.io/library/ubuntu:23.04
 ARG RUNNER_VERSION
 RUN <<eot
   set -eux
-  sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
   apt-get update
   apt-get upgrade -y
   apt-get install -y --no-install-recommends --no-install-suggests \
@@ -75,6 +74,7 @@ COPY \
   /usr/local/bin/docker-entrypoint.sh \
   /usr/local/bin/
 COPY entrypoint.sh start.sh /usr/local/bin/
+RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 VOLUME /var/lib/docker
 WORKDIR /home/nonroot/actions-runner
 ENTRYPOINT ["entrypoint.sh"]
