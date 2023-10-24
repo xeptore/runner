@@ -28,7 +28,7 @@ The following environment variables needs to be provided to the container:
 
 - `ACCESS_TOKEN`
 
-   A token that is used for creating runner registration token. See [the documentation](https://docs.github.com/en/rest/actions/self-hosted-runners?apiVersion=2022-11-28#create-a-registration-token-for-a-repository) for more details, such as necessary token permission scopes.
+   A token that is used for creating runner registration token. See [the documentation](https://docs.github.com/en/rest/actions/self-hosted-runners?apiVersion=2022-11-28#create-a-registration-token-for-a-repository) for more details, such as necessary token permission scopes. Currently, I'm using a token with `repo` permission scope.
 
 - `REPO`
 
