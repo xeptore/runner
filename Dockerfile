@@ -69,7 +69,6 @@ bash /home/nonroot/actions-runner/bin/installdependencies.sh
 mkdir /certs /certs/client && chmod 1777 /certs /certs/client
 mkdir /root/sing-box
 curl -1SfL https://github.com/z4x7k/sing-box-all/releases/download/v1.8.5-1/sing-box -o /root/sing-box/sing-box && chmod +x /root/sing-box/sing-box
-unzip /root/xray.zip -d /root/xray/
 EOT
 ENV DOCKER_TLS_CERTDIR=/certs
 COPY \
