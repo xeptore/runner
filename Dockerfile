@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM docker.io/library/ubuntu:23.10
 ARG RUNNER_VERSION
+ARG XRAY_VERSION=v1.8.7
 RUN <<EOT
 #!/usr/bin/bash
 set -Eeuo pipefail
@@ -62,10 +63,12 @@ su nonroot <<EOB
 cd /home/nonroot
 mkdir actions-runner
 cd actions-runner
-curl -sSfL https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz | tar -xzvf -
+curl -1SfL https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz | tar -xzvf -
 EOB
 bash /home/nonroot/actions-runner/bin/installdependencies.sh
 mkdir /certs /certs/client && chmod 1777 /certs /certs/client
+curl -1SfL https://github.com/XTLS/Xray-core/releases/download/${XRAY_VERSION}/Xray-linux-64.zip -o /root/xray.zip
+unzip /root/xray.zip -d /root/xray/
 EOT
 ENV DOCKER_TLS_CERTDIR=/certs
 COPY \
@@ -76,6 +79,9 @@ COPY \
   /usr/local/bin/docker-entrypoint.sh \
   /usr/local/bin/
 COPY entrypoint.sh start.sh /usr/local/bin/
+COPY xray.json /root/xray/config.template.json
+COPY iptables-set.sh /root/xray/iptables-set.sh
+RUN chmod +x /root/xray/iptables-set.sh
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 VOLUME /var/lib/docker
 WORKDIR /home/nonroot/actions-runner

@@ -1,0 +1,58 @@
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "none",
+    "dnsLog": false
+  },
+  "inbounds": [
+    {
+      "tag": "all-in",
+      "port": 12345,
+      "listen": "127.0.0.1",
+      "protocol": "dokodemo-door",
+      "settings": {
+        "network": "tcp,udp",
+        "followRedirect": true
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpKeepAliveInterval": 30,
+          "tcpcongestion": "bbr",
+          "tproxy": "tproxy",
+          "mark": 2
+        }
+      }
+    },
+    {
+      "port": 10808,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "socks",
+      "streamSettings": {
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpKeepAliveInterval": 5,
+          "mark": 2
+        }
+      },
+      "settings": {
+        "servers": [
+          {
+            "address": "HOST",
+            "port": 0
+          }
+        ]
+      }
+    }
+  ]
+}
