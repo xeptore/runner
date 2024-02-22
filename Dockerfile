@@ -58,7 +58,7 @@ apt-get autoremove -y
 apt-get autoclean -y
 rm -rf /var/lib/apt/lists/*
 useradd -m -s /bin/bash -G docker nonroot
-su nonroot <<<EOB
+su nonroot <<EOB
 cd /home/nonroot
 mkdir actions-runner
 cd actions-runner
