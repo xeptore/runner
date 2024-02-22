@@ -2,7 +2,7 @@
 FROM docker.io/library/ubuntu:23.10
 ARG RUNNER_VERSION
 RUN <<eot bash
-  set -Eeuo pipefail
+  set -Eeuxo pipefail
   apt-get update
   apt-get upgrade -y
   apt-get install -y --no-install-recommends --no-install-suggests \
