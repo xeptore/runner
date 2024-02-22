@@ -21,19 +21,20 @@ if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
   trap "kill -SIGINT $xray_pid" INT
 fi
 
-su nonroot -c start.sh &
-start_pid=$!
-wait -fn $start_pid
-
 (
   sleep 5
   until dockerd-entrypoint.sh; do
-    echo 'Failed to start Docker Daemon. Retrying in 3 seconds...'
-    sleep 3
+    echo 'Failed to start Docker Daemon. Retrying in 2 seconds...'
+    sleep 2
   done
 ) &
 dockerd_entrypoint_pid=$!
-trap 'kill -SIGINT "$(cat /var/run/docker.pid)"' INT
+
+su nonroot -c start.sh &
+start_pid=$!
+trap 'kill -SIGINT $start_pid; kill -SIGINT "$(cat /var/run/docker.pid)"' HUP INT QUIT TERM ABRT
+
+wait -fn $start_pid
 wait -fn $dockerd_entrypoint_pid
 
 sleep 3

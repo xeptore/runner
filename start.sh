@@ -16,8 +16,7 @@ cleanup() {
   ./config.sh remove --token "${REG_TOKEN}"
 }
 
-trap 'cleanup; exit 130' INT
-trap 'cleanup; exit 143' TERM
+trap 'cleanup; exit 130' HUP INT QUIT TERM ABRT
 
 ./run.sh &
 
