@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -u
+set -Eeuo pipefail
 
 (
   sleep 5

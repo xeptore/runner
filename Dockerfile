@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
-FROM docker.io/library/ubuntu:23.04
+FROM docker.io/library/ubuntu:23.10
 ARG RUNNER_VERSION
 RUN <<eot
-  set -eux
+  set -Eeuo pipefail
   apt-get update
   apt-get upgrade -y
   apt-get install -y --no-install-recommends --no-install-suggests \
@@ -42,7 +42,8 @@ RUN <<eot
   uidmap \
   unzip \
   wget \
-  xz-utils
+  xz-utils \
+  zip
   install -m 0755 -d /etc/apt/keyrings
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
   chmod a+r /etc/apt/keyrings/docker.gpg
