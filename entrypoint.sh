@@ -23,9 +23,10 @@ if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
     '.outbounds[0] += {server: $proxy_host, server_port: ($proxy_port | tonumber), username: $proxy_user, password: $proxy_pass}' \
     /root/sing-box/config.template.json > /root/sing-box/config.json
   EOB
-  /root/sing-box/iptables-set.sh
-  /root/sing-box/sing-box -c /root/sing-box/config.json &
+  /root/sing-box/sing-box run -c /root/sing-box/config.json &
   singbox_pid=$!
+  sleep 2
+  /root/sing-box/iptables-set.sh
   trap "kill -SIGINT $singbox_pid" INT
 fi
 
