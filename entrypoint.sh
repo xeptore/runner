@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -Eeuo pipefail
+set -Eeo pipefail
 
 if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
   jq \
@@ -21,26 +21,19 @@ if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
   trap "kill -SIGINT $xray_pid" INT
 fi
 
+su nonroot -c start.sh &
+start_pid=$!
+wait -fn $start_pid
+
 (
   sleep 5
   until dockerd-entrypoint.sh; do
-    echo 'Failed to start Docker Daemon. Retrying in 5 seconds...'
-    sleep 5
+    echo 'Failed to start Docker Daemon. Retrying in 3 seconds...'
+    sleep 3
   done
 ) &
-
 dockerd_entrypoint_pid=$!
-
-su nonroot -c start.sh &
-
-start_pid=$!
-
-trap 'kill -SIGINT $start_pid; kill -SIGINT "$(cat /var/run/docker.pid)"' INT
-
-wait -fn $start_pid
-
-[[ -f /var/run/docker.pid ]] && kill -SIGINT "$(cat /var/run/docker.pid)"
-
-wait -f $dockerd_entrypoint_pid
+trap 'kill -SIGINT "$(cat /var/run/docker.pid)"' INT
+wait -fn $dockerd_entrypoint_pid
 
 sleep 3
