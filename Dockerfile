@@ -81,7 +81,7 @@ COPY \
 COPY entrypoint.sh start.sh /usr/local/bin/
 COPY sing-box.json /root/sing-box/config.template.json
 COPY iptables-set.sh /root/sing-box/iptables-set.sh
-RUN chmod +x /root/xray/iptables-set.sh
+RUN chmod +x /root/sing-box/iptables-set.sh
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 VOLUME /var/lib/docker
 WORKDIR /home/nonroot/actions-runner
