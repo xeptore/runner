@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM docker.io/library/ubuntu:23.10
 ARG RUNNER_VERSION
-RUN <<eot
+RUN <<eot bash
   set -Eeuo pipefail
   apt-get update
   apt-get upgrade -y
