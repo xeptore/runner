@@ -23,7 +23,6 @@ if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
 fi
 
 (
-  sleep 5
   until dockerd-entrypoint.sh; do
     echo 'Failed to start Docker Daemon. Retrying in 2 seconds...'
     sleep 2
