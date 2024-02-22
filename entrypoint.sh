@@ -1,21 +1,28 @@
 #!/bin/bash
 
-set -Eeo pipefail
+bail() {
+  printf 'Error executing command, exiting'
+  exit 1
+}
+
+exec_cmd_nobail() {
+  printf '\n%s$ %s\n\n' "$(pwd)" "$1"
+  bash -c "$1"
+}
+
+exec_cmd() {
+  exec_cmd_nobail "$1" || bail
+}
 
 if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
   jq \
     --arg proxy_host "$PROXY_SOCKS_HOST" \
     --arg proxy_port "$PROXY_SOCKS_PORT" \
-    '.outbounds[0] += {server: $proxy_host, server_port: ($proxy_port | tonumber)}' \
+    --arg proxy_user "$PROXY_SOCKS_USER" \
+    --arg proxy_pass "$PROXY_SOCKS_PASS" \
+    '.outbounds[0] += {server: $proxy_host, server_port: ($proxy_port | tonumber), username: $proxy_user, password: $proxy_pass}' \
     /root/sing-box/config.template.json > /root/sing-box/config.json
-  if [[ -n "${PROXY_SOCKS_USER}" ]]; then
-    jq \
-      --arg proxy_user "$PROXY_SOCKS_USER" \
-      --arg proxy_pass "$PROXY_SOCKS_PASS" \
-      '.outbounds[0] += {username: $proxy_user, password: $proxy_pass}' \
-      /root/sing-box/config.json > /root/sing-box/config.json.2
-      mv /root/sing-box/config.json{.2,}
-  fi
+  EOB
   /root/sing-box/iptables-set.sh
   /root/sing-box/sing-box -c /root/sing-box/config.json &
   singbox_pid=$!
