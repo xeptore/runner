@@ -57,13 +57,12 @@ RUN <<eot bash
   apt-get autoclean -y
   rm -rf /var/lib/apt/lists/*
   useradd -m -s /bin/bash -G docker nonroot
-  (
-    su nonroot
-    cd /home/nonroot
-    mkdir actions-runner
-    cd actions-runner
-    curl -sSfL https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz | tar -xzvf -
-  )
+  su nonroot <<<eob
+  cd /home/nonroot
+  mkdir actions-runner
+  cd actions-runner
+  curl -sSfL https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz | tar -xzvf -
+  eob
   bash /home/nonroot/actions-runner/bin/installdependencies.sh
   mkdir /certs /certs/client && chmod 1777 /certs /certs/client
 eot
