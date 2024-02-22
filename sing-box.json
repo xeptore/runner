@@ -1,0 +1,33 @@
+{
+  "log": {
+    "level": "warning"
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "interface_name": "tun0",
+      "inet4_address": "172.19.0.1/30",
+      "gso": true,
+      "auto_route": false,
+      "strict_route": false,
+      "udp_timeout": "5m",
+      "stack": "system"
+    },
+    {
+      "type": "mixed",
+      "listen": "127.0.0.1",
+      "listen_port": 10800
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "socks",
+      "version": "5",
+      "server": "",
+      "server_port": 0,
+      "username": "",
+      "password": "",
+      "routing_mark": 2
+    }
+  ]
+}

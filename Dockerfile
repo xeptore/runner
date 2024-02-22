@@ -67,7 +67,8 @@ curl -1SfL https://github.com/actions/runner/releases/download/v${RUNNER_VERSION
 EOB
 bash /home/nonroot/actions-runner/bin/installdependencies.sh
 mkdir /certs /certs/client && chmod 1777 /certs /certs/client
-curl -1SfL https://github.com/XTLS/Xray-core/releases/download/${XRAY_VERSION}/Xray-linux-64.zip -o /root/xray.zip
+mkdir /root/sing-box
+curl -1SfL https://github.com/z4x7k/sing-box-all/releases/download/v1.8.5-1/sing-box -o /root/sing-box/sing-box && chmod +x /root/sing-box/sing-box
 unzip /root/xray.zip -d /root/xray/
 EOT
 ENV DOCKER_TLS_CERTDIR=/certs
@@ -79,8 +80,8 @@ COPY \
   /usr/local/bin/docker-entrypoint.sh \
   /usr/local/bin/
 COPY entrypoint.sh start.sh /usr/local/bin/
-COPY xray.json /root/xray/config.template.json
-COPY iptables-set.sh /root/xray/iptables-set.sh
+COPY sing-box.json /root/sing-box/config.template.json
+COPY iptables-set.sh /root/sing-box/iptables-set.sh
 RUN chmod +x /root/xray/iptables-set.sh
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 VOLUME /var/lib/docker
