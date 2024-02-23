@@ -2,7 +2,7 @@
 
 until (docker info >/dev/null 2>&1); do
   echo 'Waiting for Docker Daemon to become ready...'
-  sleep 3
+  sleep 1
 done
 
 set -Eeo pipefail

@@ -27,13 +27,13 @@ if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
   singbox_pid=$!
   sleep 2
   /root/sing-box/iptables-set.sh
-  trap "kill -SIGINT $singbox_pid" INT
+  trap "kill -SIGINT $singbox_pid; wait -fn $singbox_pid" INT
 fi
 
 (
   until dockerd-entrypoint.sh; do
     echo 'Failed to start Docker Daemon. Retrying in 2 seconds...'
-    sleep 2
+    sleep 1
   done
 ) &
 dockerd_entrypoint_pid=$!
@@ -45,4 +45,4 @@ trap 'kill -SIGINT $start_pid; kill -SIGINT "$(cat /var/run/docker.pid)"' HUP IN
 wait -fn $start_pid
 wait -fn $dockerd_entrypoint_pid
 
-sleep 3
+sleep 1
