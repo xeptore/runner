@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -x # TODO: remove this
 
 bail() {
   printf 'Error executing command, exiting'
@@ -12,8 +12,8 @@ exec_cmd_nobail() {
   bash -c "$1"
 }
 
-exec_cmd_nobail_user() {
-  su "$1" -c "exec_cmd_nobail $2"
+exec_cmd_user() {
+  su "$1" -c "{ printf '\n%s$ %s\n\n' $(pwd) $2 && bash -c $2 }" || bail
 }
 
 exec_cmd() {
@@ -38,12 +38,12 @@ fi
 
 REG_TOKEN=$(curl -sLX POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${ACCESS_TOKEN}" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${REPO}/actions/runners/registration-token" | jq .token --raw-output)
 
+exec_cmd_user nonroot "./config.sh --unattended --url https://github.com/${REPO} --token ${REG_TOKEN} --ephemeral --labels self-hosted --replace --name $(hostname)"
+
 cleanup() {
   echo 'Removing runner...'
-  exec_cmd_nobail_user nonroot "./config.sh remove --token ${REG_TOKEN}"
+  exec_cmd_user nonroot "./config.sh remove --token ${REG_TOKEN}"
 }
-
-exec_cmd_nobail_user nonroot "./config.sh --unattended --url https://github.com/${REPO} --token ${REG_TOKEN} --ephemeral --labels self-hosted --replace --name $(hostname)"
 
 trap cleanup EXIT ERR HUP INT QUIT TERM ABRT
 
@@ -78,7 +78,7 @@ trap '[[ -f /var/run/docker.pid ]] && kill -INT "$(cat /var/run/docker.pid); wai
   done
 )
 
-exec_cmd_nobail_user nonroot './run.sh' || cleanup
+exec_cmd_user nonroot './run.sh' || cleanup
 
 kill -INT "$(cat /var/run/docker.pid)"; wait -fn $dockerd_entrypoint_pid
 
