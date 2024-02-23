@@ -13,7 +13,7 @@ exec_cmd_nobail() {
 }
 
 exec_cmd_user() {
-  su "$1" -c "{ printf '\n%s$ %s\n\n' $(pwd) $2 && bash -c $2 }" || bail
+  su "$1" -c "{ printf '\n%s$ %s\n\n' '$(pwd)' '$2' && bash -c '$2' }" || bail
 }
 
 exec_cmd() {
