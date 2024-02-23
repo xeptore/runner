@@ -13,7 +13,7 @@ exec_cmd_nobail() {
 }
 
 exec_cmd_user() {
-  su "$1" -c "{ printf '\n%s$ %s\n\n' '$(pwd)' '$2' && bash -c '$2' }" || bail
+  su "$1" -c "bash -c '$2'" || bail
 }
 
 exec_cmd() {
@@ -55,30 +55,40 @@ trap cleanup EXIT ERR HUP INT QUIT TERM ABRT
       echo 'Failed to start Docker Daemon. Retrying in 2 seconds...'
       sleep 2
       attempt=$(( attempt + 1 ))
+    else
+      break
     fi
-    echo "Failed to start Docker Daemon after $attempt attempts."
-    exit 1
   done
+  if [[ attempt -gt max_retries ]]; then
+    echo "Failed to start Docker Daemon after $attempt retries."
+    exit 1
+  fi
 ) &
 dockerd_entrypoint_pid=$!
 
-trap '[[ -f /var/run/docker.pid ]] && kill -INT "$(cat /var/run/docker.pid); wait -fn $dockerd_entrypoint_pid"' EXIT ERR HUP INT QUIT TERM ABRT
+trap '[[ -f /var/run/docker.pid ]] && kill -INT "$(cat /var/run/docker.pid)"; wait -fn $dockerd_entrypoint_pid' EXIT ERR HUP INT QUIT TERM ABRT
 
 (
   command='docker info >/dev/null 2>&1'
-  max_retries=10
+  max_retries=20
   attempt=1
   while (( attempt <= max_retries )); do
     if eval "$command"; then
+      echo 'Seems Docker Daemon is not yet ready. Retrying in 1 second...'
       sleep 1
       attempt=$(( attempt + 1 ))
+    else
+      break
     fi
-    echo "Failed to wait for Docker Daemon to become ready after $attempt attempts."
-    exit 1
   done
+  if [[ attempt -gt max_retries ]]; then
+    echo "Failed to wait for Docker Daemon after $attempt retries."
+    exit 1
+  fi
 )
 
-exec_cmd_user nonroot './run.sh' || cleanup
+exec_cmd_user nonroot './run.sh'
+cleanup
 
 kill -INT "$(cat /var/run/docker.pid)"; wait -fn $dockerd_entrypoint_pid
 
