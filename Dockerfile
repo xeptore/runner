@@ -78,7 +78,7 @@ COPY \
   /usr/local/bin/dockerd-entrypoint.sh \
   /usr/local/bin/docker-entrypoint.sh \
   /usr/local/bin/
-COPY entrypoint.sh start.sh /usr/local/bin/
+COPY entrypoint.sh /usr/local/bin/
 COPY sing-box.json /root/sing-box/config.template.json
 COPY iptables-set.sh /root/sing-box/iptables-set.sh
 RUN chmod +x /root/sing-box/iptables-set.sh
