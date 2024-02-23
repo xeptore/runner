@@ -12,6 +12,10 @@ exec_cmd_nobail() {
   bash -c "$1"
 }
 
+exec_cmd_nobail_user() {
+  su "$1" -c "exec_cmd_nobail $2"
+}
+
 exec_cmd() {
   exec_cmd_nobail "$1" || bail
 }
@@ -36,10 +40,10 @@ REG_TOKEN=$(curl -sLX POST -H "Accept: application/vnd.github+json" -H "Authoriz
 
 cleanup() {
   echo 'Removing runner...'
-  ./config.sh remove --token "${REG_TOKEN}"
+  exec_cmd_nobail_user nonroot "./config.sh remove --token ${REG_TOKEN}"
 }
 
-exec_cmd "./config.sh --unattended --url https://github.com/${REPO} --token ${REG_TOKEN} --ephemeral --labels self-hosted --replace --name $(hostname)"
+exec_cmd_nobail_user nonroot "./config.sh --unattended --url https://github.com/${REPO} --token ${REG_TOKEN} --ephemeral --labels self-hosted --replace --name $(hostname)"
 
 trap cleanup EXIT ERR HUP INT QUIT TERM ABRT
 
@@ -74,7 +78,7 @@ trap '[[ -f /var/run/docker.pid ]] && kill -INT "$(cat /var/run/docker.pid); wai
   done
 )
 
-exec_cmd_nobail './run.sh' || cleanup
+exec_cmd_nobail_user nonroot './run.sh' || cleanup
 
 kill -INT "$(cat /var/run/docker.pid)"; wait -fn $dockerd_entrypoint_pid
 
