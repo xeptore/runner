@@ -126,6 +126,6 @@ stop_runner() {
   [[ -n "${runner_listener_pid}" ]] && echo "Stopping runner with listener pid $runner_listener_pid" && kill -INT "$runner_listener_pid"
 }
 
-trap 'stop_runner; kill -INT cleanup' EXIT ERR HUP INT QUIT TERM ABRT
+trap 'stop_runner; cleanup' EXIT ERR HUP INT QUIT TERM ABRT
 
 wait -fn $runner_pid
