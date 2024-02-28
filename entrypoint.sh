@@ -107,11 +107,9 @@ trap 'echo "> Killing Docker Daemon..." && [[ -f /var/run/docker.pid ]] && kill 
 cleanup() {
   cleanup_runner
 
-  echo '> Killing Docker Daemon...' && kill -INT "$(cat /var/run/docker.pid)" && wait -fn $dockerd_entrypoint_pid
+  [[ -f /var/run/docker.pid ]] && echo '> Killing Docker Daemon...' && kill -INT "$(cat /var/run/docker.pid)" && wait -fn $dockerd_entrypoint_pid
 
-  if [[ -n "${singbox_pid}" ]]; then
-    echo '> Killing proxy client server...' && kill -INT "$singbox_pid" && wait -fn "$singbox_pid"
-  fi
+  [[ -n "$singbox_pid" ]] && echo '> Killing proxy client server...' && kill -INT "$singbox_pid" && wait -fn "$singbox_pid"
 
   sleep 1
 }
@@ -126,6 +124,6 @@ stop_runner() {
   [[ -n "${runner_listener_pid}" ]] && echo "Stopping runner with listener pid $runner_listener_pid" && kill -INT "$runner_listener_pid"
 }
 
-trap 'stop_runner; cleanup' EXIT ERR HUP INT QUIT TERM ABRT
+trap 'stop_runner; wait -fn $runner_pid; cleanup' EXIT ERR HUP INT QUIT TERM ABRT
 
 wait -fn $runner_pid
