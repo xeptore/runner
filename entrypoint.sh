@@ -6,7 +6,7 @@ bail() {
 }
 
 exec_cmd_nobail() {
-  printf '\n%s# %s\n' "$(pwd)" "$1"
+  printf '\n%s\n' "$1"
   bash -c "$1"
 }
 
@@ -25,9 +25,9 @@ if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
     --arg proxy_pass "$PROXY_SOCKS_PASS" \
     '.outbounds[0] += {server: $proxy_host, server_port: ($proxy_port | tonumber), username: $proxy_user, password: $proxy_pass}' \
     /root/sing-box/config.template.json > /root/sing-box/config.json
-  EOB
 
-  exec_cmd '/root/sing-box/sing-box run -c /root/sing-box/config.json &'
+  echo 'Spawning proxy client...'
+  /root/sing-box/sing-box run -c /root/sing-box/config.json &
   singbox_pid=$!
   echo "Spawned proxy client in the backgroung with pid $singbox_pid"
 
@@ -39,6 +39,7 @@ if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
       sleep 1
       attempt=$(( attempt + 1 ))
     else
+      echo 'Proxy tunnel device is ready.'
       break
     fi
   done
