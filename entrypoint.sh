@@ -92,8 +92,6 @@ on_trap+=(clear_runner)
     echo "> Failed to start Docker Daemon after $attempt retries."
     exit 69
   fi
-  dockerd_pid=$(cat /var/run/docker.pid)
-  echo "> Docker Daemon is running with pid $dockerd_pid."
 ) &
 dockerd_entrypoint_pid=$!
 
