@@ -67,7 +67,7 @@ EOB
 bash /home/nonroot/actions-runner/bin/installdependencies.sh
 mkdir /certs /certs/client && chmod 1777 /certs /certs/client
 mkdir /root/sing-box
-curl -1SfL https://github.com/z4x7k/sing-box-all/releases/download/v1.9.0-beta.1-1/sing-box -o /root/sing-box/sing-box && chmod +x /root/sing-box/sing-box
+curl -1SfL https://github.com/z4x7k/sing-box-all/releases/download/v1.9.0-beta.4-1/sing-box -o /root/sing-box/sing-box && chmod +x /root/sing-box/sing-box
 EOT
 ENV DOCKER_TLS_CERTDIR=/certs
 COPY \

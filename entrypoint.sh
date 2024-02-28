@@ -10,7 +10,7 @@ handle_trap() {
     return 0
   fi
 
-  echo 'Running shutdown procedure...'
+  echo '> Running shutdown procedure...'
 
   declare -a reversed
   for ((i = length - 1; i >= 0; i--)); do
@@ -26,7 +26,7 @@ handle_trap() {
     eval "$cmd"
   done
 
-  echo 'Finished shutdown procedure.'
+  echo '> Finished shutdown procedure.'
 }
 
 trap 'handle_trap' EXIT HUP INT QUIT TERM ABRT
