@@ -84,4 +84,5 @@ RUN chmod +x /root/sing-box/iptables-set.sh
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 VOLUME /var/lib/docker
 WORKDIR /home/nonroot/actions-runner
+STOPSIGNAL SIGINT
 ENTRYPOINT ["entrypoint.sh"]
