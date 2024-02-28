@@ -5,8 +5,12 @@ set -m
 
 declare -a on_trap
 handle_trap() {
-  echo 'running handle trap'...
   length=${#on_trap[@]}
+  if [[ length -eq 0 ]]; then
+    return 0
+  fi
+
+  echo 'Running shutdown procedure...'
 
   declare -a reversed
   for ((i = length - 1; i >= 0; i--)); do
@@ -21,6 +25,8 @@ handle_trap() {
     # https://phoenixnap.com/kb/bash-eval
     eval "$cmd"
   done
+
+  echo 'Finished shutdown procedure.'
 }
 
 trap 'handle_trap' EXIT HUP INT QUIT TERM ABRT
