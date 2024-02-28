@@ -104,6 +104,12 @@ trap 'echo "> Killing Docker Daemon..." && [[ -f /var/run/docker.pid ]] && kill 
   fi
 )
 
+stop_runner() {
+  local runner_listener_pid
+  runner_listener_pid=$(pidof -s Runner.Listener)
+  [[ -n "${runner_listener_pid}" ]] && echo "Stopping runner with listener pid $runner_listener_pid" && kill -INT "$runner_listener_pid"
+}
+
 cleanup() {
   cleanup_runner
 
@@ -114,16 +120,7 @@ cleanup() {
   sleep 1
 }
 
-echo '> Spawning runner...'
-su nonroot -c ./run.sh &
-runner_pid=$!
+trap 'stop_runner; cleanup' EXIT ERR HUP INT QUIT TERM ABRT
 
-stop_runner() {
-  local runner_listener_pid
-  runner_listener_pid=$(pidof -s Runner.Listener)
-  [[ -n "${runner_listener_pid}" ]] && echo "Stopping runner with listener pid $runner_listener_pid" && kill -INT "$runner_listener_pid"
-}
-
-trap 'stop_runner; wait -fn $runner_pid; cleanup' EXIT ERR HUP INT QUIT TERM ABRT
-
-wait -fn $runner_pid
+echo '> Starting runner...'
+su nonroot -c ./run.sh
