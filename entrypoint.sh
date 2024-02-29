@@ -34,8 +34,8 @@ trap 'handle_trap' EXIT HUP INT QUIT TERM ABRT
 printf "\n\n> Starting up on host %s...\n" "$(hostname)"
 
 if [[ -n "${REGISTRY_MIRRORS}" ]]; then
-  echo '> Configuring Docker registry mirrors...'
-  echo "${REGISTRY_MIRRORS}" | jq -R '{registry-mirrors: split(",")}' >/etc/docker/daemon.json
+  echo "> Configuring Docker registry mirrors with ${REGISTRY_MIRRORS}..."
+  echo "${REGISTRY_MIRRORS}" | jq -R '{"registry-mirrors": split(",")}' >/etc/docker/daemon.json
   echo '> Docker registry mirrors configured.'
 fi
 
