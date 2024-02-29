@@ -31,7 +31,7 @@ handle_trap() {
 
 trap 'handle_trap' EXIT HUP INT QUIT TERM ABRT
 
-printf "\n\n\n> Starting up on host %s...\n\n\n\n" "$(hostname)"
+printf "\n\n> Starting up on host %s...\n" "$(hostname)"
 
 if [[ -n "${REGISTRY_MIRRORS}" ]]; then
   echo '> Configuring Docker registry mirrors...'
