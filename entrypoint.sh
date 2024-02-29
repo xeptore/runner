@@ -31,7 +31,13 @@ handle_trap() {
 
 trap 'handle_trap' EXIT HUP INT QUIT TERM ABRT
 
-echo "> Starting up on host $(hostname)..."
+printf "\n\n\n> Starting up on host %s...\n\n\n\n" "$(hostname)"
+
+if [[ -n "${REGISTRY_MIRRORS}" ]]; then
+  echo '> Configuring Docker registry mirrors...'
+  echo "${REGISTRY_MIRRORS}" | jq -R '{registry-mirrors: split(",")}' >/etc/docker/daemon.json
+  echo '> Docker registry mirrors configured.'
+fi
 
 if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
   echo '> Activating proxy client...'
