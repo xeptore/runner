@@ -46,7 +46,12 @@ if [[ -n "${PROXY_SOCKS_HOST}" && -n "${PROXY_SOCKS_PORT}" ]]; then
   echo '> Spawning proxy client...'
   /root/sing-box/sing-box run -c /root/sing-box/config.json &
   singbox_pid=$!
-  on_trap+=("echo '> Shutting down proxy client...' && kill -INT $singbox_pid && wait -fn $singbox_pid")
+  close_singbox() {
+    echo '> Shutting down proxy client...'
+    kill -INT "$singbox_pid" && wait -fn "$singbox_pid"
+    echo '> Proxy client is shutdown.'
+  }
+  on_trap+=(close_singbox)
   echo "> Proxy client spawned in the backgroung with pid $singbox_pid"
 
   max_retries=10
