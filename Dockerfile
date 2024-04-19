@@ -5,9 +5,11 @@ ARG SINGBOX_TAG=v1.9.0-rc.9-1
 RUN <<EOT
 #!/usr/bin/bash
 set -Eeuo pipefail
-add-apt-repository ppa:git-core/ppa
 apt-get update
 apt-get upgrade -y
+apt-get install -y --no-install-recommends --no-install-suggests software-properties-common
+add-apt-repository ppa:git-core/ppa
+apt-get purge -y software-properties-common
 apt-get install -y --no-install-recommends --no-install-suggests \
 apt-transport-https \
 build-essential \
