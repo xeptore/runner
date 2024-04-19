@@ -5,6 +5,7 @@ ARG SINGBOX_TAG=v1.9.0-rc.3-1
 RUN <<EOT
 #!/usr/bin/bash
 set -Eeuo pipefail
+add-apt-repository ppa:git-core/ppa
 apt-get update
 apt-get upgrade -y
 apt-get install -y --no-install-recommends --no-install-suggests \
