@@ -31,6 +31,8 @@ iptables \
 jq \
 kmod \
 libffi-dev \
+libicu74 \
+libicu-dev \
 libssl-dev \
 make \
 net-tools \
