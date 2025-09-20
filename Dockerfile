@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM docker.io/library/ubuntu:25.04
 ARG RUNNER_VERSION
-ARG SINGBOX_TAG=1.12.3-1
+ARG SINGBOX_TAG=v1.12.3-1
 RUN <<EOT
 #!/usr/bin/bash
 set -Eeuo pipefail
