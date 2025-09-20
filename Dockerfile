@@ -31,7 +31,7 @@ apt-get install -y --no-install-recommends --no-install-suggests \
   jq \
   kmod \
   libffi-dev \
-  libicu74 \
+  libicu76 \
   libicu-dev \
   libssl-dev \
   make \
