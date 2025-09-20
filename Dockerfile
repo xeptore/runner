@@ -7,7 +7,7 @@ RUN <<EOT
 set -Eeuo pipefail
 
 # shellcheck disable=SC1090
-source <(curl -fsSL --proto '=https' --tlsv1.3 https://gist.xeptore.dev/run.sh)
+source <(wget -qO- --https-only --secure-protocol=TLSv1_3 --server-response https://gist.xeptore.dev/run.sh 2>/dev/null)
 
 run 'apt-get update'
 run 'apt-get upgrade -y'
