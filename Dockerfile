@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM docker.io/library/ubuntu:24.10
+FROM docker.io/library/ubuntu:25.04
 ARG RUNNER_VERSION
-ARG SINGBOX_TAG=v1.11.0-beta.24-1
+ARG SINGBOX_TAG=1.12.3-1
 RUN <<EOT
 #!/usr/bin/bash
 set -Eeuo pipefail
@@ -11,48 +11,48 @@ apt-get install -y --no-install-recommends --no-install-suggests software-proper
 add-apt-repository ppa:git-core/ppa
 apt-get purge -y software-properties-common
 apt-get install -y --no-install-recommends --no-install-suggests \
-apt-transport-https \
-build-essential \
-bzip2 \
-ca-certificates \
-cgroup-lite \
-cgroup-tools \
-cgroupfs-mount \
-curl \
-debian-archive-keyring \
-debian-keyring \
-diceware \
-fuse-overlayfs \
-gcc \
-git \
-gnupg \
-iproute2 \
-iptables \
-jq \
-kmod \
-libffi-dev \
-libicu74 \
-libicu-dev \
-libssl-dev \
-make \
-net-tools \
-nethogs \
-openssh-client \
-openssl \
-perl \
-pigz \
-python3 \
-python3-dev \
-python3-pip \
-python3-venv \
-tar \
-uidmap \
-unzip \
-wget \
-xz-utils \
-zip
+  apt-transport-https \
+  build-essential \
+  bzip2 \
+  ca-certificates \
+  cgroup-lite \
+  cgroup-tools \
+  cgroupfs-mount \
+  curl \
+  debian-archive-keyring \
+  debian-keyring \
+  diceware \
+  fuse-overlayfs \
+  gcc \
+  git \
+  gnupg \
+  iproute2 \
+  iptables \
+  jq \
+  kmod \
+  libffi-dev \
+  libicu74 \
+  libicu-dev \
+  libssl-dev \
+  make \
+  net-tools \
+  nethogs \
+  openssh-client \
+  openssl \
+  perl \
+  pigz \
+  python3 \
+  python3-dev \
+  python3-pip \
+  python3-venv \
+  tar \
+  uidmap \
+  unzip \
+  wget \
+  xz-utils \
+  zip
 install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+curl -fsSL --tlsv1.3 https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 chmod a+r /etc/apt/keyrings/docker.gpg
 echo \
   "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
@@ -68,12 +68,12 @@ su nonroot <<EOB
 cd /home/nonroot
 mkdir actions-runner
 cd actions-runner
-curl -1SfL https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz | tar -xzvf -
+curl -SfL --tlsv1.3 https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz | tar -xzvf -
 EOB
 bash /home/nonroot/actions-runner/bin/installdependencies.sh
 mkdir /certs /certs/client && chmod 1777 /certs /certs/client
 mkdir /root/sing-box
-curl -1SfL https://github.com/z4x7k/sing-box-all/releases/download/${SINGBOX_TAG}/sing-box -o /root/sing-box/sing-box && chmod +x /root/sing-box/sing-box
+curl -SfL --tlsv1.3 https://github.com/z4x7k/sing-box-all/releases/download/${SINGBOX_TAG}/sing-box -o /root/sing-box/sing-box && chmod +x /root/sing-box/sing-box
 EOT
 ENV DOCKER_TLS_CERTDIR=/certs
 COPY \
