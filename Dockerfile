@@ -6,8 +6,10 @@ RUN <<EOT
 #!/usr/bin/bash
 set -Eeuo pipefail
 
+apt-get update && apt-get upgrade -y && apt-get install curl -y && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
 # shellcheck disable=SC1090
-source <(wget -qO- --https-only --secure-protocol=TLSv1_3 --server-response https://gist.xeptore.dev/run.sh 2>/dev/null)
+source <(wget -qO- --https-only --secure-protocol=TLSv1_3 https://gist.xeptore.dev/run.sh)
 
 run 'apt-get update'
 run 'apt-get upgrade -y'
